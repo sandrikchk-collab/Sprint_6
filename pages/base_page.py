@@ -12,32 +12,41 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(driver, WAIT_TIMEOUT)
 
+    @allure.step("Открыть страницу {url}")
     def open(self, url):
         self.driver.get(url)
 
+    @allure.step("Найти видимый элемент {locator}")
     def find(self, locator):
         return self.wait.until(EC.visibility_of_element_located(locator))
 
+    @allure.step("Кликнуть по элементу {locator}")
     def click(self, locator):
         self.scroll_to(locator)
         self.wait.until(EC.element_to_be_clickable(locator)).click()
 
+    @allure.step("Ввести «{text}» в поле {locator}")
     def type(self, locator, text):
         self.find(locator).send_keys(text)
 
+    @allure.step("Получить текст элемента {locator}")
     def get_text(self, locator):
         return self.find(locator).text
 
+    @allure.step("Прокрутить страницу до элемента {locator}")
     def scroll_to(self, locator):
         element = self.wait.until(EC.presence_of_element_located(locator))
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
 
+    @allure.step("Проверить, что элемент {locator} отображается")
     def is_visible(self, locator):
         return self.find(locator).is_displayed()
 
+    @allure.step("Получить текущий URL")
     def current_url(self):
         return self.driver.current_url
 
+    @allure.step("Дождаться, что URL содержит «{part}»")
     def wait_url_contains(self, part):
         self.wait.until(EC.url_contains(part))
         return self.driver.current_url
