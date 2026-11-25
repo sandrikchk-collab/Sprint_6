@@ -47,3 +47,4 @@ ORDER_DATA = [
 
 
 WAIT_TIMEOUT = 10
+METRO_LOAD_TIMEOUT = 30  # список станций метро грузится с сервера дольше обычного
