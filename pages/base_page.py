@@ -1,4 +1,5 @@
 import allure
+from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -23,7 +24,12 @@ class BasePage:
     @allure.step("Кликнуть по элементу {locator}")
     def click(self, locator):
         self.scroll_to(locator)
-        self.wait.until(EC.element_to_be_clickable(locator)).click()
+        element = self.wait.until(EC.element_to_be_clickable(locator))
+        try:
+            element.click()
+        except ElementClickInterceptedException:
+            # элемент перекрыт другим (например, картинкой самоката) — кликаем через JS
+            self.driver.execute_script("arguments[0].click();", element)
 
     @allure.step("Ввести «{text}» в поле {locator}")
     def type(self, locator, text):
