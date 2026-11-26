@@ -17,6 +17,10 @@ class BasePage:
     def open(self, url):
         self.driver.get(url)
 
+    @allure.step("Дождаться появления элемента {locator} (до {timeout} с)")
+    def wait_for_element(self, locator, timeout=WAIT_TIMEOUT):
+        return WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+
     @allure.step("Найти видимый элемент {locator}")
     def find(self, locator):
         return self.wait.until(EC.visibility_of_element_located(locator))
@@ -34,6 +38,10 @@ class BasePage:
     @allure.step("Ввести «{text}» в поле {locator}")
     def type(self, locator, text):
         self.find(locator).send_keys(text)
+
+    @allure.step("Нажать клавишу в поле {locator}")
+    def press_key(self, locator, key):
+        self.find(locator).send_keys(key)
 
     @allure.step("Получить текст элемента {locator}")
     def get_text(self, locator):

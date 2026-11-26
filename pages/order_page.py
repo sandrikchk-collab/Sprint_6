@@ -1,7 +1,5 @@
 import allure
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from data import METRO_LOAD_TIMEOUT
 from locators.order_page_locators import OrderPageLocators
@@ -23,16 +21,13 @@ class OrderPage(BasePage):
     def select_metro(self, station):
         self.click(OrderPageLocators.METRO_INPUT)
         self.type(OrderPageLocators.METRO_INPUT, station)  # фильтруем список станций
-        WebDriverWait(self.driver, METRO_LOAD_TIMEOUT).until(
-            EC.presence_of_element_located(OrderPageLocators.metro_option(station))
-        )
+        self.wait_for_element(OrderPageLocators.metro_option(station), METRO_LOAD_TIMEOUT)
         self.click(OrderPageLocators.metro_option(station))
 
     @allure.step("Заполнить форму «Про аренду»")
     def fill_rent_form(self, data):
-        date_input = self.find(OrderPageLocators.DATE_INPUT)
-        date_input.send_keys(data["date"])
-        date_input.send_keys(Keys.ENTER)  # закрываем календарь
+        self.type(OrderPageLocators.DATE_INPUT, data["date"])
+        self.press_key(OrderPageLocators.DATE_INPUT, Keys.ENTER)  # закрываем календарь
         self.click(OrderPageLocators.RENT_DROPDOWN)
         self.click(OrderPageLocators.rent_option(data["rent"]))
         self.click(OrderPageLocators.color_checkbox(data["color"]))
